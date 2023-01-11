@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/penglongli/gin-metrics/ginmetrics"
@@ -22,7 +23,8 @@ func responseMsg(c *gin.Context) string {
 	}
 	response += "\nHostname: " + name + "\n"
 	response += "Path: " + c.Request.URL.Path + "\n"
-	response += "IP: " + c.ClientIP() + "\n"
+	response += "L3 IP: " + strings.Split(c.Request.RemoteAddr, ":")[0] + "\n"
+	response += "L7 IP: " + c.ClientIP() + "\n"
 
 	backend := os.Getenv("BACKEND")
 	if backend != "" {

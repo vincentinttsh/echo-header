@@ -21,10 +21,15 @@ func responseMsg(c *gin.Context) string {
 	for k, v := range c.Request.Header {
 		response += k + ": " + v[0] + "\n"
 	}
+
 	response += "\nHostname: " + name + "\n"
 	response += "Path: " + c.Request.URL.Path + "\n"
 	response += "L3 IP: " + strings.Split(c.Request.RemoteAddr, ":")[0] + "\n"
-	response += "L7 IP: " + c.ClientIP() + "\n"
+	if c.GetHeader("Cf-Connecting-Ip") != "" {
+		response += "L7 IP: " + c.GetHeader("Cf-Connecting-Ip") + "\n"
+	} else {
+		response += "L7 IP: " + c.ClientIP() + "\n"
+	}
 
 	backend := os.Getenv("BACKEND")
 	if backend != "" {
